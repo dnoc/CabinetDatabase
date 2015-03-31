@@ -1,5 +1,6 @@
 package eli.cabinetdatabase;
 
+import android.content.Context;
 import android.nfc.Tag;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -57,27 +58,10 @@ public class Search extends ActionBarActivity {
         super.onStart();
 
         Log.d(testTag,"Entered onStart()");
-
-        //set Views
-        if (modelNumInput == null) {
-            modelNumInput = (EditText) findViewById(R.id.modelNumText);
-        }
-        if(designInput == null) {
-            designInput = (EditText) findViewById(R.id.designText);
-        }
-        if(widthInput == null) {
-            widthInput = (EditText) findViewById(R.id.widthText);
-        }
-        if (heightInput == null) {
-            heightInput = (EditText) findViewById(R.id.heightText);
-        }
-        if(depthInput == null) {
-            depthInput = (EditText) findViewById(R.id.depthText);
-        }
         if (materialList == null) {
             materialList = (ListView) findViewById(R.id.materialListView);
             String[] materials = new String[]{"Steel","Wood"};
-            ArrayAdapter<String> materialAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice,materials);
+            ArrayAdapter<String> materialAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_multiple_choice,materials);
 
             materialList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
             materialList.setAdapter(materialAdapter);
@@ -90,9 +74,7 @@ public class Search extends ActionBarActivity {
             typeList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
             typeList.setAdapter(typeAdapter);
         }
-        if (searchButton == null) {
-            searchButton = (Button) findViewById(R.id.search_button);
-        }
+
     }
 
     @Override
@@ -108,8 +90,9 @@ public class Search extends ActionBarActivity {
         Log.d(testTag,"Entered onPause()");
     }
 
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    public void onSaveInstanceState(Bundle outState) {
+
+        Log.d(testTag,"Entered saveInstance()");
 
         if (modelNumInput.getText().toString() != "") {
             outState.putString(MODELNUMKEY, modelNumInput.getText().toString());
@@ -126,10 +109,13 @@ public class Search extends ActionBarActivity {
         if (depthInput.getText().toString() != "") {
             outState.putString(DEPTHKEY, depthInput.getText().toString());
         }
+
+        super.onSaveInstanceState(outState);
     }
 
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        Log.d(testTag,"Entered restoreInstance()");
 
         String temp;
         temp= savedInstanceState.getString(MODELNUMKEY);
@@ -209,6 +195,28 @@ public class Search extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_search, container, false);
+
+            //set Views
+            if (modelNumInput == null) {
+                modelNumInput = (EditText) rootView.findViewById(R.id.modelNumText);
+            }
+            if(designInput == null) {
+                designInput = (EditText) rootView.findViewById(R.id.designText);
+            }
+            if(widthInput == null) {
+                widthInput = (EditText) rootView.findViewById(R.id.widthText);
+            }
+            if (heightInput == null) {
+                heightInput = (EditText) rootView.findViewById(R.id.heightText);
+            }
+            if(depthInput == null) {
+                depthInput = (EditText) rootView.findViewById(R.id.depthText);
+            }
+
+            if (searchButton == null) {
+                searchButton = (Button) rootView.findViewById(R.id.search_button);
+            }
+
             return rootView;
         }
     }
