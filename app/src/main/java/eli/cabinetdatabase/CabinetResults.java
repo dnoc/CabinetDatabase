@@ -10,6 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
 
 
 public class CabinetResults extends ActionBarActivity {
@@ -59,7 +62,20 @@ public class CabinetResults extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_cabinet_results, container, false);
+            final View rootView = inflater.inflate(R.layout.fragment_cabinet_results, container, false);
+
+            //Get Integer[] of images from R.drawable that need to be shown
+            CustomList adapter = new CustomList(this.getActivity(), new String[] {"Model Number"} , new Integer[] {R.drawable.e43cl});
+            ListView displayList = (ListView) rootView.findViewById(R.id.listView);
+            displayList.setAdapter(adapter);
+            displayList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                                        int position, long id) {
+                    Toast.makeText(rootView.getContext(), "You Clicked on Cabinet 1", Toast.LENGTH_SHORT).show();
+                }
+            });
+
             return rootView;
         }
     }

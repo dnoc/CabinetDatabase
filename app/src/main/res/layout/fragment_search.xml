@@ -10,6 +10,7 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="Search"
+        android:onClick="onSubmit"
         android:id="@+id/search_button"
         android:layout_below="@+id/typeListView"
         android:layout_marginTop="30dp"

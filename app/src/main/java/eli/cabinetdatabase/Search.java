@@ -1,5 +1,6 @@
 package eli.cabinetdatabase;
 
+import android.content.Intent;
 import android.nfc.Tag;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -16,6 +17,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 public class Search extends ActionBarActivity {
@@ -100,6 +106,112 @@ public class Search extends ActionBarActivity {
         super.onResume();
 
         Log.d(testTag,"Entered onResume()");
+    }
+
+    public void onSubmit(View view)
+    {
+        boolean validQuery = true;
+        //Create database object
+
+        //Start SELECT statement
+        //DB = new DBHelper(getBaseContext());
+        //SQLiteDatabase db = DB.getReadableDatabase();
+
+        ArrayList<String> colVals = new ArrayList<String>();
+        ArrayList<String> cols = new ArrayList<String>();
+
+        //Get user selected data from page
+        String modelNum = modelNumInput.getText().toString();
+        if (!modelNum.equals("") && modelNum.trim().length() != 0)
+        {
+            colVals.add(modelNum);
+
+            //Add Column name i.e.
+            // cols.add(DB.cabinet_table_modelnum_Column + "=?");
+        }
+        String design = designInput.getText().toString();
+        if  (!design.equals("") &&  design.trim().length() != 0)
+        {
+            colVals.add(design);
+
+            //Add Column name i.e.
+            // cols.add(DB.cabinet_table_modelnum_Column + "=?");
+        }
+
+        int width = convertToInt(widthInput.getText().toString());
+        if (width < 0)
+        {
+            Toast.makeText(this, "Please enter a valid width", Toast.LENGTH_SHORT).show();
+            validQuery = false;
+        }
+        else if (width != 0)
+        {
+            colVals.add(Integer.toString(width));
+
+            //Add Column name i.e.
+            // cols.add(DB.cabinet_table_modelnum_Column + "=?");
+        }
+
+        int height = convertToInt(heightInput.getText().toString());
+        if (height < 0)
+        {
+            Toast.makeText(this, "Please enter a valid height", Toast.LENGTH_SHORT).show();
+            validQuery = false;
+        }
+        else if (height != 0)
+        {
+            colVals.add(Integer.toString(height));
+
+            //Add Column name i.e.
+            // cols.add(DB.cabinet_table_modelnum_Column + "=?");
+        }
+
+        int depth = convertToInt(depthInput.getText().toString());
+        if (depth < 0) {
+            Toast.makeText(this, "Please enter a valid depth", Toast.LENGTH_SHORT).show();
+            validQuery = false;
+        }
+        else if(depth != 0)
+        {
+            colVals.add(Integer.toString(depth));
+
+            //Add Column name i.e.
+            // cols.add(DB.cabinet_table_modelnum_Column + "=?");
+        }
+        //Check for selected values of ListViews here!!!
+
+        if (validQuery) {
+            //String[] selection = (String[]) cols.toArray();
+            //String[] selectionArgs = (String[]) colVals.toArray();
+
+            try{
+                //Better way to do this??
+                //Cursor cursor = db.query(DBHelper.DATABASE_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
+
+                //Save cursor in bundle or other package visible var and open cabinet results page
+                Intent in = new Intent(getApplicationContext(), CabinetResults.class);
+                //in.putExtra("CursorObj", cursor as serializable object)
+                startActivity(in);
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private int convertToInt(String value)
+    {
+        int retVal = 0;
+        try
+        {
+            retVal = Integer.parseInt(value);
+            return retVal;
+        }
+        catch (Exception e)
+        {
+            return  retVal;
+        }
     }
 
     @Override
