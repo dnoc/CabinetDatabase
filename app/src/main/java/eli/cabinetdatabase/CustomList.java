@@ -2,6 +2,7 @@ package eli.cabinetdatabase;
 
 import android.app.Activity;
 import android.net.Uri;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,14 @@ public class CustomList extends ArrayAdapter<String> {
         TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
         txtTitle.setText(web[position]);
-        imageView.setImageURI(imageId[position]);
+        if (imageId.length != 0) {
+            imageView.setImageURI(imageId[position]);
+        }
+        else
+        {
+            //No rows were found for their search
+            txtTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        }
         return rowView;
     }
 }

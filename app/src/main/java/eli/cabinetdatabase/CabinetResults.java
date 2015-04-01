@@ -113,7 +113,7 @@ public class CabinetResults extends ActionBarActivity {
                             cursor.moveToNext();
                         }
 
-                        String[] displayText = {"Model Number : ? \nType : ? \n" };
+                        String[] displayText = getDisplayText(cabinets);
 
                         Uri[] imgId = getImageIds(cabinets);
 
@@ -131,7 +131,7 @@ public class CabinetResults extends ActionBarActivity {
                     }
                     else
                     {
-                        CustomList adapter = new CustomList(this.getActivity(), new String[]{"No rows found"}, new Uri[]{});
+                        CustomList adapter = new CustomList(this.getActivity(), new String[]{"No rows found\nPlease refine your search!"}, new Uri[]{});
                         ListView displayList = (ListView) rootView.findViewById(R.id.listView);
                         displayList.setAdapter(adapter);
                         cursor.close();
@@ -151,10 +151,16 @@ public class CabinetResults extends ActionBarActivity {
             String retVal = "";
             for (int i = 0; i<cols.size(); i++)
             {
-                retVal = retVal + cols.get(i) + " ";
+                if (cols.get(i).contains("OR"))
+                {
+                    retVal = retVal + cols.get(i);
+                }
+                else {
+                    retVal = retVal + cols.get(i) + " AND ";
+                }
             }
 
-            return retVal.substring(0, retVal.length() - 1);
+            return retVal.substring(0, retVal.length() - 5);
         }
 
         private String[] getArgArray(ArrayList<String> cols)
@@ -184,6 +190,23 @@ public class CabinetResults extends ActionBarActivity {
                 {
                     retVal[i] = null;
                 }
+            }
+
+            return retVal;
+        }
+
+        private String[] getDisplayText(ArrayList<Cabinet> cabinets)
+        {
+            int size = cabinets.size();
+            String[] retVal = new String[size];
+            for (int i = 0; i < size; i++)
+            {
+                String modNo = cabinets.get(i).getModelNum();
+                String type = cabinets.get(i).getType();
+                String temp = "Model Number : \n1? \nType : \n2? \n";
+                temp = temp.replace("1?", modNo);
+                temp = temp.replace("2?", type);
+                retVal[i] = temp;
             }
 
             return retVal;

@@ -1,5 +1,6 @@
 package eli.cabinetdatabase;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,6 +10,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,8 +43,6 @@ public class Search extends ActionBarActivity {
     private static String DEPTHKEY  = "depth";
     private static String MATERIALKEY = "material";
     private static String TYPEKEY = "type";
-
-    private static final String[] cabinetColumns = {MODELNUMKEY, DESIGNKEY, WIDTHKEY, HEIGHTKEY, DEPTHKEY, TYPEKEY} ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,12 +126,75 @@ public class Search extends ActionBarActivity {
             colVals.add(Integer.toString(depth));
             cols.add(DEPTHKEY + "=?");
         }
-        //Check for selected values of ListViews here!!!
+
+        //Check for selected material values
+        SparseBooleanArray selectedMaterials = materialList.getCheckedItemPositions();
+        int selectedCount = 0;
+        for (int i = 0; i < selectedMaterials.size(); i++)
+        {
+            if (selectedMaterials.valueAt(i))
+            {
+                colVals.add(materialList.getItemAtPosition(i).toString());
+                selectedCount++;
+            }
+        }
+
+        boolean first = true;
+        while (selectedCount > 0)
+        {
+            if (selectedCount == 1)
+            {
+                cols.add(MATERIALKEY + "=? )");
+            }
+            else
+            {
+                if (first)
+                {
+                    cols.add("(" + MATERIALKEY + "=? OR ");
+                    first = false;
+                }
+                else {
+                    cols.add(MATERIALKEY + "=? OR ");
+                }
+            }
+            selectedCount--;
+        }
+
+        //Check for selected type values
+        SparseBooleanArray selectedTypes = typeList.getCheckedItemPositions();
+        selectedCount = 0;
+        for (int i = 0; i < selectedTypes.size(); i++)
+        {
+            if (selectedTypes.valueAt(i))
+            {
+                colVals.add(typeList.getItemAtPosition(i).toString());
+                selectedCount++;
+            }
+        }
+
+        first = true;
+        while (selectedCount > 0)
+        {
+            if (selectedCount == 1)
+            {
+                cols.add(TYPEKEY + "=? )");
+            }
+            else
+            {
+                if (first)
+                {
+                    cols.add("(" + TYPEKEY + "=? OR ");
+                    first = false;
+                }
+                else {
+                    cols.add(TYPEKEY + "=? OR ");
+                }
+            }
+            selectedCount--;
+        }
 
         if (validQuery) {
             try{
-                //Better way to do this??
-                //Save cursor in bundle or other package visible var and open cabinet results page
                 Intent in = new Intent(getApplicationContext(), CabinetResults.class);
                 in.putStringArrayListExtra("Selection", cols);
                 in.putStringArrayListExtra("SelectionArgs", colVals);
