@@ -1,6 +1,8 @@
 package eli.cabinetdatabase;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.nfc.Tag;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -19,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,18 +31,18 @@ public class Search extends ActionBarActivity {
 
     private static EditText modelNumInput, designInput,widthInput,heightInput,depthInput = null;
     private static ListView materialList, typeList = null;
-    private static Button searchButton = null;
 
-    private static String testTag = "Testing";
-    private static String MODELNUMKEY = "ModelNumber";
-    private static String DESIGNKEY = "Design";
-    private static String WIDTHKEY = "Width";
-    private static String HEIGHTKEY = "Height";
-    private static String DEPTHKEY  = "Depth";
-    private static String MATERIALKEY = "Material";
-    private static String TYPEKEY = "Type";
+    protected static String testTag = "Testing";
 
+    private static String MODELNUMKEY = "model_number";
+    private static String DESIGNKEY = "design_file";
+    private static String WIDTHKEY = "width";
+    private static String HEIGHTKEY = "height";
+    private static String DEPTHKEY  = "depth";
+    private static String MATERIALKEY = "material";
+    private static String TYPEKEY = "type";
 
+    private static final String[] cabinetColumns = {MODELNUMKEY, DESIGNKEY, WIDTHKEY, HEIGHTKEY, DEPTHKEY, TYPEKEY} ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +54,7 @@ public class Search extends ActionBarActivity {
                     .commit();
         }
 
-
-
         Log.d(testTag,"Entered onCreate()");
-
-
     }
 
     @Override
@@ -63,42 +62,6 @@ public class Search extends ActionBarActivity {
         super.onStart();
 
         Log.d(testTag,"Entered onStart()");
-
-        //set Views
-        if (modelNumInput == null) {
-            modelNumInput = (EditText) findViewById(R.id.modelNumText);
-        }
-        if(designInput == null) {
-            designInput = (EditText) findViewById(R.id.designText);
-        }
-        if(widthInput == null) {
-            widthInput = (EditText) findViewById(R.id.widthText);
-        }
-        if (heightInput == null) {
-            heightInput = (EditText) findViewById(R.id.heightText);
-        }
-        if(depthInput == null) {
-            depthInput = (EditText) findViewById(R.id.depthText);
-        }
-        if (materialList == null) {
-            materialList = (ListView) findViewById(R.id.materialListView);
-            String[] materials = new String[]{"Steel","Wood"};
-            ArrayAdapter<String> materialAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice,materials);
-
-            materialList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-            materialList.setAdapter(materialAdapter);
-        }
-        if (typeList == null) {
-            typeList = (ListView) findViewById(R.id.typeListView);
-            String[] types = new String[]{"Sitting","ADA","Standing","Wall","Full"};
-            ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice,types);
-
-            typeList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-            typeList.setAdapter(typeAdapter);
-        }
-        if (searchButton == null) {
-            searchButton = (Button) findViewById(R.id.search_button);
-        }
     }
 
     @Override
@@ -111,11 +74,6 @@ public class Search extends ActionBarActivity {
     public void onSubmit(View view)
     {
         boolean validQuery = true;
-        //Create database object
-
-        //Start SELECT statement
-        //DB = new DBHelper(getBaseContext());
-        //SQLiteDatabase db = DB.getReadableDatabase();
 
         ArrayList<String> colVals = new ArrayList<String>();
         ArrayList<String> cols = new ArrayList<String>();
@@ -125,17 +83,13 @@ public class Search extends ActionBarActivity {
         if (!modelNum.equals("") && modelNum.trim().length() != 0)
         {
             colVals.add(modelNum);
-
-            //Add Column name i.e.
-            // cols.add(DB.cabinet_table_modelnum_Column + "=?");
+            cols.add(MODELNUMKEY + "=?");
         }
         String design = designInput.getText().toString();
         if  (!design.equals("") &&  design.trim().length() != 0)
         {
             colVals.add(design);
-
-            //Add Column name i.e.
-            // cols.add(DB.cabinet_table_modelnum_Column + "=?");
+            cols.add(DESIGNKEY + "=?");
         }
 
         int width = convertToInt(widthInput.getText().toString());
@@ -147,9 +101,7 @@ public class Search extends ActionBarActivity {
         else if (width != 0)
         {
             colVals.add(Integer.toString(width));
-
-            //Add Column name i.e.
-            // cols.add(DB.cabinet_table_modelnum_Column + "=?");
+            cols.add(WIDTHKEY + "=?");
         }
 
         int height = convertToInt(heightInput.getText().toString());
@@ -161,9 +113,7 @@ public class Search extends ActionBarActivity {
         else if (height != 0)
         {
             colVals.add(Integer.toString(height));
-
-            //Add Column name i.e.
-            // cols.add(DB.cabinet_table_modelnum_Column + "=?");
+            cols.add(HEIGHTKEY + "=?");
         }
 
         int depth = convertToInt(depthInput.getText().toString());
@@ -174,23 +124,17 @@ public class Search extends ActionBarActivity {
         else if(depth != 0)
         {
             colVals.add(Integer.toString(depth));
-
-            //Add Column name i.e.
-            // cols.add(DB.cabinet_table_modelnum_Column + "=?");
+            cols.add(DEPTHKEY + "=?");
         }
         //Check for selected values of ListViews here!!!
 
         if (validQuery) {
-            //String[] selection = (String[]) cols.toArray();
-            //String[] selectionArgs = (String[]) colVals.toArray();
-
             try{
                 //Better way to do this??
-                //Cursor cursor = db.query(DBHelper.DATABASE_TABLE_NAME, columns, selection, selectionArgs, null, null, null);
-
                 //Save cursor in bundle or other package visible var and open cabinet results page
                 Intent in = new Intent(getApplicationContext(), CabinetResults.class);
-                //in.putExtra("CursorObj", cursor as serializable object)
+                in.putStringArrayListExtra("Selection", cols);
+                in.putStringArrayListExtra("SelectionArgs", colVals);
                 startActivity(in);
             }
             catch(Exception e)
@@ -223,46 +167,49 @@ public class Search extends ActionBarActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if (modelNumInput.getText().toString() != "") {
+        if (!modelNumInput.getText().toString().equals("")) {
             outState.putString(MODELNUMKEY, modelNumInput.getText().toString());
         }
-        if (designInput.getText().toString() != "") {
+        if (!designInput.getText().toString().equals("")) {
             outState.putString(DESIGNKEY, designInput.getText().toString());
         }
-        if (widthInput.getText().toString() != "") {
+        if (!widthInput.getText().toString().equals("")) {
             outState.putString(WIDTHKEY, widthInput.getText().toString());
         }
-        if (heightInput.getText().toString() != "") {
+        if (!heightInput.getText().toString().equals("")) {
             outState.putString(HEIGHTKEY, heightInput.getText().toString());
         }
-        if (depthInput.getText().toString() != "") {
+        if (!depthInput.getText().toString().equals("")) {
             outState.putString(DEPTHKEY, depthInput.getText().toString());
         }
     }
 
+    @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        String temp;
-        temp= savedInstanceState.getString(MODELNUMKEY);
-        if (temp != null) {
-            modelNumInput.setText(temp);
-        }
-        temp= savedInstanceState.getString(DESIGNKEY);
-        if (temp != null) {
-            designInput.setText(temp);
-        }
-        temp= savedInstanceState.getString(WIDTHKEY);
-        if (temp != null) {
-            widthInput.setText(temp);
-        }
-        temp= savedInstanceState.getString(HEIGHTKEY);
-        if (temp != null) {
-            heightInput.setText(temp);
-        }
-        temp= savedInstanceState.getString(DEPTHKEY);
-        if (temp != null) {
-            depthInput.setText(temp);
+        if (savedInstanceState != null) {
+            String temp;
+            temp = savedInstanceState.getString(MODELNUMKEY);
+            if (temp != null) {
+                modelNumInput.setText(temp);
+            }
+            temp = savedInstanceState.getString(DESIGNKEY);
+            if (temp != null) {
+                designInput.setText(temp);
+            }
+            temp = savedInstanceState.getString(WIDTHKEY);
+            if (temp != null) {
+                widthInput.setText(temp);
+            }
+            temp = savedInstanceState.getString(HEIGHTKEY);
+            if (temp != null) {
+                heightInput.setText(temp);
+            }
+            temp = savedInstanceState.getString(DEPTHKEY);
+            if (temp != null) {
+                depthInput.setText(temp);
+            }
         }
     }
 
@@ -321,6 +268,34 @@ public class Search extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_search, container, false);
+
+            setRetainInstance(true);
+
+            //set Views
+            modelNumInput = (EditText) rootView.findViewById(R.id.modelNumText);
+
+            designInput = (EditText) rootView.findViewById(R.id.designText);
+
+            widthInput = (EditText) rootView.findViewById(R.id.widthText);
+
+            heightInput = (EditText) rootView.findViewById(R.id.heightText);
+
+            depthInput = (EditText) rootView.findViewById(R.id.depthText);
+
+            materialList = (ListView) rootView.findViewById(R.id.materialListView);
+            String[] materials = new String[]{"Steel","Wood"};
+            ArrayAdapter<String> materialAdapter = new ArrayAdapter<String>(rootView.getContext(), android.R.layout.simple_list_item_multiple_choice,materials);
+
+            materialList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+            materialList.setAdapter(materialAdapter);
+
+            typeList = (ListView) rootView.findViewById(R.id.typeListView);
+            String[] types = new String[]{"Sitting","ADA","Standing","Wall","Full"};
+            ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(rootView.getContext(), android.R.layout.simple_list_item_multiple_choice,types);
+
+            typeList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+            typeList.setAdapter(typeAdapter);
+
             return rootView;
         }
     }

@@ -1,6 +1,7 @@
 package eli.cabinetdatabase;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +16,9 @@ public class CustomList extends ArrayAdapter<String> {
 
     private final Activity context;
     private final String[] web;
-    private final Integer[] imageId;
+    private final Uri[] imageId;
     public CustomList(Activity context,
-                      String[] web, Integer[] imageId) {
+                      String[] web, Uri[] imageId) {
         super(context, R.layout.list_row, web);
         this.context = context;
         this.web = web;
@@ -30,7 +31,7 @@ public class CustomList extends ArrayAdapter<String> {
         TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
         txtTitle.setText(web[position]);
-        imageView.setImageResource(imageId[position]);
+        imageView.setImageURI(imageId[position]);
         return rowView;
     }
 }

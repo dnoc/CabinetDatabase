@@ -1,9 +1,13 @@
 package eli.cabinetdatabase;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +17,10 @@ import android.os.Build;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.net.URI;
+import java.util.ArrayList;
 
 
 public class CabinetResults extends ActionBarActivity {
@@ -27,7 +35,6 @@ public class CabinetResults extends ActionBarActivity {
                     .commit();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -64,19 +71,122 @@ public class CabinetResults extends ActionBarActivity {
                                  Bundle savedInstanceState) {
             final View rootView = inflater.inflate(R.layout.fragment_cabinet_results, container, false);
 
-            //Get Integer[] of images from R.drawable that need to be shown
-            CustomList adapter = new CustomList(this.getActivity(), new String[] {"Model Number"} , new Integer[] {R.drawable.e43cl});
-            ListView displayList = (ListView) rootView.findViewById(R.id.listView);
-            displayList.setAdapter(adapter);
-            displayList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view,
-                                        int position, long id) {
-                    Toast.makeText(rootView.getContext(), "You Clicked on Cabinet 1", Toast.LENGTH_SHORT).show();
+            Bundle extras = getActivity().getIntent().getExtras();
+            if (extras != null)
+            {
+                ArrayList<String> cols = extras.getStringArrayList("Selection");
+                ArrayList<String> colVals = extras.getStringArrayList("SelectionArgs");
+
+                String selection = getQueryableColString(cols);
+                String[] selectionArgs = getArgArray(colVals);
+
+                //Create database object
+                SQLiteDatabase db;
+
+                File dbFile = rootView.getContext().getDatabasePath(DBHelper.DB_NAME);
+                if (!dbFile.exists()) {
+                    DBHelper DB = new DBHelper(rootView.getContext());
+                    db = DB.open();
                 }
-            });
+                else
+                {
+                    db = SQLiteDatabase.openDatabase(dbFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
+                }
+
+                if (db != null) {
+                    Cursor cursor = db.query(DBHelper.TABLE_CABINET, new String[]{"*"}, selection, selectionArgs, null, null, null);
+
+                    //Create array of cabinet objects to store values retrieved from database
+
+                    //if there were rows retrieved
+                    if (cursor.moveToFirst()) {
+                        //Create arraylist of cabinets, one for each cabinet retrieved
+                        ArrayList<Cabinet> cabinets = new ArrayList<>(cursor.getCount());
+                        for (int i = 0; i < cursor.getCount(); i++)
+                        {
+                            cabinets.add(new Cabinet(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_MODEL_NUMBER)),
+                                    cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_WIDTH)),
+                                    cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_HEIGHT)),
+                                    cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_DEPTH)),
+                                    cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_TYPE)),
+                                    cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_DESIGN_FILE))));
+                            cursor.moveToNext();
+                        }
+
+                        String[] displayText = {"Model Number : ? \nType : ? \n" };
+
+                        Uri[] imgId = getImageIds(cabinets);
+
+                        CustomList adapter = new CustomList(this.getActivity(), displayText, imgId);
+                        ListView displayList = (ListView) rootView.findViewById(R.id.listView);
+                        displayList.setAdapter(adapter);
+                        cursor.close();
+                        displayList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view,
+                                                    int position, long id) {
+                                Toast.makeText(rootView.getContext(), "You Clicked on Cabinet 1", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        CustomList adapter = new CustomList(this.getActivity(), new String[]{"No rows found"}, new Uri[]{});
+                        ListView displayList = (ListView) rootView.findViewById(R.id.listView);
+                        displayList.setAdapter(adapter);
+                        cursor.close();
+                    }
+                }
+                else
+                {
+                    Log.d(Search.testTag, "Database Not Found!");
+                }
+            }
 
             return rootView;
+        }
+
+        private String getQueryableColString(ArrayList<String> cols)
+        {
+            String retVal = "";
+            for (int i = 0; i<cols.size(); i++)
+            {
+                retVal = retVal + cols.get(i) + " ";
+            }
+
+            return retVal.substring(0, retVal.length() - 1);
+        }
+
+        private String[] getArgArray(ArrayList<String> cols)
+        {
+            String[] retVal = new String[cols.size()];
+
+            for (int i = 0; i<cols.size(); i++)
+            {
+                retVal[i] = cols.get(i);
+            }
+
+            return retVal;
+        }
+
+        private Uri[] getImageIds(ArrayList<Cabinet> cabinets)
+        {
+            Uri[] retVal = new Uri[cabinets.size()];
+
+            for (int i = 0; i < cabinets.size(); i++)
+            {
+                try {
+                    String fullPath = cabinets.get(i).getDesignFile();
+                    String fileName = fullPath.substring(0, fullPath.indexOf('.'));
+                    retVal[i] = Uri.parse("android.resource://eli.cabinetdatabase/drawable/" + fileName);
+                }
+                catch (Exception ex)
+                {
+                    retVal[i] = null;
+                }
+            }
+
+            return retVal;
         }
     }
 }
