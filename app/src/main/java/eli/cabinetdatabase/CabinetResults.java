@@ -94,7 +94,7 @@ public class CabinetResults extends ActionBarActivity {
                 }
 
                 if (db != null) {
-                    Cursor cursor = db.query(DBHelper.TABLE_CABINET, new String[]{"*"}, selection, selectionArgs, null, null, null);
+                    Cursor cursor = db.query(DBHelper.TABLE_CABINET, null, selection, selectionArgs, null, null, null);
 
                     //Create array of cabinet objects to store values retrieved from database
 

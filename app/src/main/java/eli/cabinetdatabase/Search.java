@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.nfc.Tag;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -128,11 +129,10 @@ public class Search extends ActionBarActivity {
         }
 
         //Check for selected material values
-        SparseBooleanArray selectedMaterials = materialList.getCheckedItemPositions();
         int selectedCount = 0;
-        for (int i = 0; i < selectedMaterials.size(); i++)
+        for (int i = 0; i < materialList.getAdapter().getCount(); i++)
         {
-            if (selectedMaterials.valueAt(i))
+            if (materialList.isItemChecked(i))
             {
                 colVals.add(materialList.getItemAtPosition(i).toString());
                 selectedCount++;
@@ -161,11 +161,10 @@ public class Search extends ActionBarActivity {
         }
 
         //Check for selected type values
-        SparseBooleanArray selectedTypes = typeList.getCheckedItemPositions();
         selectedCount = 0;
-        for (int i = 0; i < selectedTypes.size(); i++)
+        for (int i = 0; i < typeList.getAdapter().getCount(); i++)
         {
-            if (selectedTypes.valueAt(i))
+            if (typeList.isItemChecked(i))
             {
                 colVals.add(typeList.getItemAtPosition(i).toString());
                 selectedCount++;
@@ -177,13 +176,13 @@ public class Search extends ActionBarActivity {
         {
             if (selectedCount == 1)
             {
-                cols.add(TYPEKEY + "=? )");
+                cols.add(TYPEKEY + "=? ");
             }
             else
             {
                 if (first)
                 {
-                    cols.add("(" + TYPEKEY + "=? OR ");
+                    cols.add("" + TYPEKEY + "=? OR ");
                     first = false;
                 }
                 else {
@@ -195,6 +194,10 @@ public class Search extends ActionBarActivity {
 
         if (validQuery) {
             try{
+                //Make ASync task to query database
+                //    new AsyncTask<Void, Void, Void>() {
+                //        @Override
+                //        protected Void doInBackground(Void... params) {
                 Intent in = new Intent(getApplicationContext(), CabinetResults.class);
                 in.putStringArrayListExtra("Selection", cols);
                 in.putStringArrayListExtra("SelectionArgs", colVals);
