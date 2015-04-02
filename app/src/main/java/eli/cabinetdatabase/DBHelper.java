@@ -94,22 +94,106 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         //insert cabinets
             //e43cl
+        cv = new ContentValues();
         cv.put(COLUMN_CABINET_MODEL_NUMBER,"e43c352230l");
         cv.put(COLUMN_CABINET_WIDTH,30);
         cv.put(COLUMN_CABINET_HEIGHT,35);
         cv.put(COLUMN_CABINET_DEPTH,22);
         cv.put(COLUMN_CABINET_TYPE,"Standing");
         cv.put(COLUMN_CABINET_DESIGN_FILE,"e43cl.bmp");
+        cv.put("catalog_name","Research Collection");
         DB.insert(TABLE_CABINET, null, cv);
 
         cv = new ContentValues();
-
         cv.put(COLUMN_CABINET_MODEL_NUMBER,"e43c352236l");
         cv.put(COLUMN_CABINET_WIDTH,36);
         cv.put(COLUMN_CABINET_HEIGHT,35);
         cv.put(COLUMN_CABINET_DEPTH,22);
         cv.put(COLUMN_CABINET_TYPE,"Standing");
         cv.put(COLUMN_CABINET_DESIGN_FILE,"e43cl.bmp");
+        cv.put("catalog_name","Research Collection");
+        DB.insert(TABLE_CABINET, null, cv);
+
+        cv = new ContentValues();
+        cv.put(COLUMN_CABINET_MODEL_NUMBER,"e43c352242l");
+        cv.put(COLUMN_CABINET_WIDTH,42);
+        cv.put(COLUMN_CABINET_HEIGHT,35);
+        cv.put(COLUMN_CABINET_DEPTH,22);
+        cv.put(COLUMN_CABINET_TYPE,"Standing");
+        cv.put(COLUMN_CABINET_DESIGN_FILE,"e43cl.bmp");
+        cv.put("catalog_name","Research Collection");
+        DB.insert(TABLE_CABINET, null, cv);
+
+        cv = new ContentValues();
+        cv.put(COLUMN_CABINET_MODEL_NUMBER,"e43c352248l");
+        cv.put(COLUMN_CABINET_WIDTH,48);
+        cv.put(COLUMN_CABINET_HEIGHT,35);
+        cv.put(COLUMN_CABINET_DEPTH,22);
+        cv.put(COLUMN_CABINET_TYPE,"Standing");
+        cv.put(COLUMN_CABINET_DESIGN_FILE,"e43cl.bmp");
+        cv.put("catalog_name","Research Collection");
+        DB.insert(TABLE_CABINET, null, cv);
+
+            //d30w
+        cv = new ContentValues();
+        cv.put(COLUMN_CABINET_MODEL_NUMBER,"d30w342215");
+        cv.put(COLUMN_CABINET_WIDTH,15);
+        cv.put(COLUMN_CABINET_HEIGHT,34);
+        cv.put(COLUMN_CABINET_DEPTH,22);
+        cv.put(COLUMN_CABINET_TYPE,"ADA");
+        cv.put(COLUMN_CABINET_DESIGN_FILE,"d30w15_24.bmp");
+        cv.put("catalog_name","Signature Series");
+        DB.insert(TABLE_CABINET, null, cv);
+
+        cv = new ContentValues();
+        cv.put(COLUMN_CABINET_MODEL_NUMBER,"d30w342218");
+        cv.put(COLUMN_CABINET_WIDTH,18);
+        cv.put(COLUMN_CABINET_HEIGHT,34);
+        cv.put(COLUMN_CABINET_DEPTH,22);
+        cv.put(COLUMN_CABINET_TYPE,"ADA");
+        cv.put(COLUMN_CABINET_DESIGN_FILE,"d30w15_24.bmp");
+        cv.put("catalog_name","Signature Series");
+        DB.insert(TABLE_CABINET, null, cv);
+
+        cv = new ContentValues();
+        cv.put(COLUMN_CABINET_MODEL_NUMBER,"d30w342221");
+        cv.put(COLUMN_CABINET_WIDTH,21);
+        cv.put(COLUMN_CABINET_HEIGHT,34);
+        cv.put(COLUMN_CABINET_DEPTH,22);
+        cv.put(COLUMN_CABINET_TYPE,"ADA");
+        cv.put(COLUMN_CABINET_DESIGN_FILE,"d30w15_24.bmp");
+        cv.put("catalog_name","Signature Series");
+        DB.insert(TABLE_CABINET, null, cv);
+
+        cv = new ContentValues();
+        cv.put(COLUMN_CABINET_MODEL_NUMBER,"d30w342224");
+        cv.put(COLUMN_CABINET_WIDTH,24);
+        cv.put(COLUMN_CABINET_HEIGHT,34);
+        cv.put(COLUMN_CABINET_DEPTH,22);
+        cv.put(COLUMN_CABINET_TYPE,"ADA");
+        cv.put(COLUMN_CABINET_DESIGN_FILE,"d30w15_24.bmp");
+        cv.put("catalog_name","Signature Series");
+        DB.insert(TABLE_CABINET, null, cv);
+
+            //w21w
+        cv = new ContentValues();
+        cv.put(COLUMN_CABINET_MODEL_NUMBER,"w21w301217l");
+        cv.put(COLUMN_CABINET_WIDTH,17);
+        cv.put(COLUMN_CABINET_HEIGHT,30);
+        cv.put(COLUMN_CABINET_DEPTH,12);
+        cv.put(COLUMN_CABINET_TYPE,"Wall");
+        cv.put(COLUMN_CABINET_DESIGN_FILE,"w21wl_30.bmp");
+        cv.put("catalog_name","Signature Series");
+        DB.insert(TABLE_CABINET, null, cv);
+
+        cv = new ContentValues();
+        cv.put(COLUMN_CABINET_MODEL_NUMBER,"w21w301223l");
+        cv.put(COLUMN_CABINET_WIDTH,23);
+        cv.put(COLUMN_CABINET_HEIGHT,30);
+        cv.put(COLUMN_CABINET_DEPTH,12);
+        cv.put(COLUMN_CABINET_TYPE,"Wall");
+        cv.put(COLUMN_CABINET_DESIGN_FILE,"w21wl_30.bmp");
+        cv.put("catalog_name","Signature Series");
         DB.insert(TABLE_CABINET, null, cv);
 
     }
