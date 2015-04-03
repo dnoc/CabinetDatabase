@@ -17,7 +17,11 @@ public class Cabinet {
 
     private String designFile;
 
-    public Cabinet(String modNo, int wid, int hei, int dep, String typ, String desFile)
+    private String material;
+
+    private String catalogName;
+
+    public Cabinet(String modNo, int wid, int hei, int dep, String typ, String desFile, String catName)
     {
         modelNum = modNo;
         width = wid;
@@ -25,7 +29,24 @@ public class Cabinet {
         depth = dep;
         type = typ;
         designFile = desFile;
+        catalogName = catName;
     }
+
+    public Cabinet(String modNo, int wid, int hei, int dep, String typ, String desFile, String cabName, String mat)
+    {
+        modelNum = modNo;
+        width = wid;
+        height = hei;
+        depth = dep;
+        type = typ;
+        designFile = desFile;
+        catalogName = cabName;
+        material = mat;
+    }
+
+    public String getMaterial() { return material; }
+
+    public  String getCatalogName() { return catalogName; }
 
     public String getModelNum()
     {

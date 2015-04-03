@@ -21,6 +21,8 @@ import android.widget.Toast;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class CabinetResults extends ActionBarActivity {
@@ -74,27 +76,54 @@ public class CabinetResults extends ActionBarActivity {
             Bundle extras = getActivity().getIntent().getExtras();
             if (extras != null)
             {
+                String sqlMaterial = extras.getString("sqlMaterial");
+                ArrayList<String> materialCols = extras.getStringArrayList("materialVals");
+                String[] materialVals = getArgArray(materialCols);
+
                 ArrayList<String> cols = extras.getStringArrayList("Selection");
                 ArrayList<String> colVals = extras.getStringArrayList("SelectionArgs");
 
-                String selection = getQueryableColString(cols);
-                String[] selectionArgs = getArgArray(colVals);
+                String selection = null;
+                String[] selectionArgs = null;
+                if (cols.size() > 0)
+                    selection = getQueryableColString(cols);
+                if (colVals.size() > 0)
+                    selectionArgs = getArgArray(colVals);
 
                 //Create database object
                 SQLiteDatabase db;
 
+                //Check if database already exists
                 File dbFile = rootView.getContext().getDatabasePath(DBHelper.DB_NAME);
-                if (!dbFile.exists()) {
-                    DBHelper DB = new DBHelper(rootView.getContext());
-                    db = DB.open();
+                //delete existing database file if it exists
+                //FOR TESTING ONLY, REMOVE ONCE ALL CABINETS HAVE BEEN ADDED IN DBHelper Class!!
+                if (dbFile.exists()) {
+                    dbFile.delete();
                 }
-                else
-                {
-                    db = SQLiteDatabase.openDatabase(dbFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
-                }
+
+                DBHelper DB = new DBHelper(rootView.getContext());
+                db = DB.open();
 
                 if (db != null) {
                     Cursor cursor = db.query(DBHelper.TABLE_CABINET, null, selection, selectionArgs, null, null, null);
+                    Cursor materialCursor = null;
+                    Map<String, String> matName = new HashMap<>();
+                    if (sqlMaterial == null) {
+                        sqlMaterial = "Select * from " + DBHelper.TABLE_CATALOG;
+                    }
+                    materialCursor = db.rawQuery(sqlMaterial, materialVals);
+
+                    if (materialCursor.moveToFirst())
+                    {
+                        matName.put(materialCursor.getString(materialCursor.getColumnIndex(DBHelper.COLUMN_CATALOG_NAME)),
+                                materialCursor.getString(materialCursor.getColumnIndex(DBHelper.COLUMN_CATALOG_MATERIAL)));
+                        while (materialCursor.moveToNext())
+                        {
+                            matName.put(materialCursor.getString(materialCursor.getColumnIndex(DBHelper.COLUMN_CATALOG_NAME)),
+                                    materialCursor.getString(materialCursor.getColumnIndex(DBHelper.COLUMN_CATALOG_MATERIAL)));
+                        }
+                    }
+                    //Cursor cursor = db.rawQuery(sqlSelect, selectionArgs);
 
                     //Create array of cabinet objects to store values retrieved from database
 
@@ -102,32 +131,57 @@ public class CabinetResults extends ActionBarActivity {
                     if (cursor.moveToFirst()) {
                         //Create arraylist of cabinets, one for each cabinet retrieved
                         ArrayList<Cabinet> cabinets = new ArrayList<>(cursor.getCount());
-                        for (int i = 0; i < cursor.getCount(); i++)
-                        {
-                            cabinets.add(new Cabinet(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_MODEL_NUMBER)),
-                                    cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_WIDTH)),
-                                    cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_HEIGHT)),
-                                    cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_DEPTH)),
-                                    cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_TYPE)),
-                                    cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_DESIGN_FILE))));
+                        for (int i = 0; i < cursor.getCount(); i++) {
+                            if (matName.isEmpty()) {
+                                cabinets.add(new Cabinet(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_MODEL_NUMBER)),
+                                        cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_WIDTH)),
+                                        cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_HEIGHT)),
+                                        cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_DEPTH)),
+                                        cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_TYPE)),
+                                        cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_DESIGN_FILE)),
+                                        cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CATALOG_NAME))));
+                            } else {
+                                //Make new cabinet object with material
+                                String catalogName = cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_FK_CATALOG_NAME));
+                                if (matName.containsKey(catalogName)) {
+                                    cabinets.add(new Cabinet(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_MODEL_NUMBER)),
+                                            cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_WIDTH)),
+                                            cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_HEIGHT)),
+                                            cursor.getInt(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_DEPTH)),
+                                            cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_TYPE)),
+                                            cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_DESIGN_FILE)),
+                                            catalogName,
+                                            matName.get(catalogName)));
+                                }
+                            }
                             cursor.moveToNext();
                         }
 
-                        String[] displayText = getDisplayText(cabinets);
+                        if (cabinets.size() > 0) {
+                            String[] displayText = getDisplayText(cabinets);
 
-                        Uri[] imgId = getImageIds(cabinets);
+                            Uri[] imgId = getImageIds(cabinets);
 
-                        CustomList adapter = new CustomList(this.getActivity(), displayText, imgId);
-                        ListView displayList = (ListView) rootView.findViewById(R.id.listView);
-                        displayList.setAdapter(adapter);
-                        cursor.close();
-                        displayList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view,
-                                                    int position, long id) {
-                                Toast.makeText(rootView.getContext(), "You Clicked on Cabinet 1", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                            CustomList adapter = new CustomList(this.getActivity(), displayText, imgId);
+                            ListView displayList = (ListView) rootView.findViewById(R.id.listView);
+                            displayList.setAdapter(adapter);
+                            cursor.close();
+                            displayList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view,
+                                                        int position, long id) {
+                                    //Load cabinetDetail fragment here!
+                                    Toast.makeText(rootView.getContext(), "You Clicked on Cabinet 1", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                        else
+                        {
+                            CustomList adapter = new CustomList(this.getActivity(), new String[]{"No rows found\nPlease refine your search!"}, new Uri[]{});
+                            ListView displayList = (ListView) rootView.findViewById(R.id.listView);
+                            displayList.setAdapter(adapter);
+                            cursor.close();
+                        }
                     }
                     else
                     {
@@ -165,14 +219,16 @@ public class CabinetResults extends ActionBarActivity {
 
         private String[] getArgArray(ArrayList<String> cols)
         {
-            String[] retVal = new String[cols.size()];
+            if (cols == null)
+                return null;
+            else {
+                String[] retVal = new String[cols.size()];
 
-            for (int i = 0; i<cols.size(); i++)
-            {
-                retVal[i] = cols.get(i);
+                for (int i = 0; i < cols.size(); i++) {
+                    retVal[i] = cols.get(i);
+                }
+                return retVal;
             }
-
-            return retVal;
         }
 
         private Uri[] getImageIds(ArrayList<Cabinet> cabinets)
@@ -203,9 +259,11 @@ public class CabinetResults extends ActionBarActivity {
             {
                 String modNo = cabinets.get(i).getModelNum();
                 String type = cabinets.get(i).getType();
-                String temp = "Model Number : \n1? \nType : \n2? \n";
+                String material = cabinets.get(i).getMaterial();
+                String temp = "Model Number : \n1? \nType : \n2? \nMaterial : \n3? \n";
                 temp = temp.replace("1?", modNo);
                 temp = temp.replace("2?", type);
+                temp = temp.replace("3?", material);
                 retVal[i] = temp;
             }
 

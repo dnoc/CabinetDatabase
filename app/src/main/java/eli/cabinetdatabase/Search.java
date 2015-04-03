@@ -129,13 +129,17 @@ public class Search extends ActionBarActivity {
         }
 
         //Check for selected material values
+        String sqlMaterial = null;
+        ArrayList<String> materialCols = new ArrayList<>();
+        ArrayList<String> materialVals = new ArrayList<>();
         int selectedCount = 0;
         for (int i = 0; i < materialList.getAdapter().getCount(); i++)
         {
             if (materialList.isItemChecked(i))
             {
-                colVals.add(materialList.getItemAtPosition(i).toString());
+                materialVals.add(materialList.getItemAtPosition(i).toString());
                 selectedCount++;
+                sqlMaterial = "Select * from " + DBHelper.TABLE_CATALOG + " WHERE ";
             }
         }
 
@@ -144,17 +148,19 @@ public class Search extends ActionBarActivity {
         {
             if (selectedCount == 1)
             {
-                cols.add(MATERIALKEY + "=? )");
+                materialCols.add(MATERIALKEY + "=? ");
+                sqlMaterial += MATERIALKEY + "=?";
             }
             else
             {
+                sqlMaterial += MATERIALKEY + "=? OR ";
                 if (first)
                 {
-                    cols.add("(" + MATERIALKEY + "=? OR ");
+                    materialCols.add(MATERIALKEY + "=? OR ");
                     first = false;
                 }
                 else {
-                    cols.add(MATERIALKEY + "=? OR ");
+                    materialCols.add(MATERIALKEY + "=? OR ");
                 }
             }
             selectedCount--;
@@ -176,13 +182,19 @@ public class Search extends ActionBarActivity {
         {
             if (selectedCount == 1)
             {
-                cols.add(TYPEKEY + "=? ");
+                if (first) {
+                    cols.add(TYPEKEY + "=?");
+                }
+                else {
+                    cols.add(TYPEKEY + "=? )");
+                }
             }
             else
             {
+
                 if (first)
                 {
-                    cols.add("" + TYPEKEY + "=? OR ");
+                    cols.add("(" + TYPEKEY + "=? OR ");
                     first = false;
                 }
                 else {
@@ -201,6 +213,12 @@ public class Search extends ActionBarActivity {
                 Intent in = new Intent(getApplicationContext(), CabinetResults.class);
                 in.putStringArrayListExtra("Selection", cols);
                 in.putStringArrayListExtra("SelectionArgs", colVals);
+
+                if (sqlMaterial != null) {
+                    in.putExtra("sqlMaterial", sqlMaterial);
+                    in.putExtra("materialCols", materialCols);
+                    in.putExtra("materialVals", materialVals);
+                }
                 startActivity(in);
             }
             catch(Exception e)
