@@ -374,7 +374,7 @@ public class Search extends ActionBarActivity {
             materialList.setAdapter(materialAdapter);
 
             typeList = (ListView) rootView.findViewById(R.id.typeListView);
-            String[] types = new String[]{"Sitting","ADA","Standing","Wall","Full"};
+            String[] types = new String[]{"Sitting","ADA","Standing","Wall","Full Height"};
             ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(rootView.getContext(), android.R.layout.simple_list_item_multiple_choice,types);
 
             typeList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
