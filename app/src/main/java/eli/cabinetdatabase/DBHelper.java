@@ -144,7 +144,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_FK_CATALOG_NAME,"Research Collection");
         DB.insert(TABLE_CABINET, null, cv);
 
-            //d30w
+            //d30w15_24 width
         cv = new ContentValues();
         cv.put(COLUMN_CABINET_MODEL_NUMBER,"d30w342215");
         cv.put(COLUMN_CABINET_WIDTH,15);
@@ -185,7 +185,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_FK_CATALOG_NAME,"Signature Series");
         DB.insert(TABLE_CABINET, null, cv);
 
-            //w21w
+            //w21w_30 height
         cv = new ContentValues();
         cv.put(COLUMN_CABINET_MODEL_NUMBER,"w21w301217l");
         cv.put(COLUMN_CABINET_WIDTH,17);
@@ -206,6 +206,67 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_FK_CATALOG_NAME,"Signature Series");
         DB.insert(TABLE_CABINET, null, cv);
 
+            //d00w15_24 width
+        cv = new ContentValues();
+        cv.put(COLUMN_CABINET_MODEL_NUMBER,"d00w342215");
+        cv.put(COLUMN_CABINET_WIDTH,15);
+        cv.put(COLUMN_CABINET_HEIGHT,34);
+        cv.put(COLUMN_CABINET_DEPTH,22);
+        cv.put(COLUMN_CABINET_TYPE,"ADA");
+        cv.put(COLUMN_CABINET_DESIGN_FILE,"d00w15_24.bmp");
+        cv.put("catalog_name","Signature Series");
+        DB.insert(TABLE_CABINET, null, cv);
+
+        cv = new ContentValues();
+        cv.put(COLUMN_CABINET_MODEL_NUMBER,"d00w342218");
+        cv.put(COLUMN_CABINET_WIDTH,18);
+        cv.put(COLUMN_CABINET_HEIGHT,34);
+        cv.put(COLUMN_CABINET_DEPTH,22);
+        cv.put(COLUMN_CABINET_TYPE,"ADA");
+        cv.put(COLUMN_CABINET_DESIGN_FILE,"d00w15_24.bmp");
+        cv.put("catalog_name","Signature Series");
+        DB.insert(TABLE_CABINET, null, cv);
+
+        cv = new ContentValues();
+        cv.put(COLUMN_CABINET_MODEL_NUMBER,"d00w342221");
+        cv.put(COLUMN_CABINET_WIDTH,21);
+        cv.put(COLUMN_CABINET_HEIGHT,34);
+        cv.put(COLUMN_CABINET_DEPTH,22);
+        cv.put(COLUMN_CABINET_TYPE,"ADA");
+        cv.put(COLUMN_CABINET_DESIGN_FILE,"d00w15_24.bmp");
+        cv.put("catalog_name","Signature Series");
+        DB.insert(TABLE_CABINET, null, cv);
+
+        cv = new ContentValues();
+        cv.put(COLUMN_CABINET_MODEL_NUMBER,"d00w342224");
+        cv.put(COLUMN_CABINET_WIDTH,24);
+        cv.put(COLUMN_CABINET_HEIGHT,34);
+        cv.put(COLUMN_CABINET_DEPTH,22);
+        cv.put(COLUMN_CABINET_TYPE,"ADA");
+        cv.put(COLUMN_CABINET_DESIGN_FILE,"d00w15_24.bmp");
+        cv.put("catalog_name","Signature Series");
+        DB.insert(TABLE_CABINET, null, cv);
+
+            //s40m36_48 width
+        cv = new ContentValues();
+        cv.put(COLUMN_CABINET_MODEL_NUMBER,"s40m842236");
+        cv.put(COLUMN_CABINET_WIDTH,36);
+        cv.put(COLUMN_CABINET_HEIGHT,84);
+        cv.put(COLUMN_CABINET_DEPTH,22);
+        cv.put(COLUMN_CABINET_TYPE,"Full Height");
+        cv.put(COLUMN_CABINET_DESIGN_FILE,"s40m36_48.bmp");
+        cv.put("catalog_name","Research Collection");
+        DB.insert(TABLE_CABINET, null, cv);
+
+        cv = new ContentValues();
+        cv.put(COLUMN_CABINET_MODEL_NUMBER,"s40m842248");
+        cv.put(COLUMN_CABINET_WIDTH,48);
+        cv.put(COLUMN_CABINET_HEIGHT,84);
+        cv.put(COLUMN_CABINET_DEPTH,22);
+        cv.put(COLUMN_CABINET_TYPE,"Full Height");
+        cv.put(COLUMN_CABINET_DESIGN_FILE,"s40m36_48.bmp");
+        cv.put("catalog_name","Research Collection");
+        DB.insert(TABLE_CABINET, null, cv);
     }
 
 }
