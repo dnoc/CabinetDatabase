@@ -212,7 +212,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_CABINET_WIDTH,15);
         cv.put(COLUMN_CABINET_HEIGHT,34);
         cv.put(COLUMN_CABINET_DEPTH,22);
-        cv.put(COLUMN_CABINET_TYPE,"ADA");
+        cv.put(COLUMN_CABINET_TYPE,"Sitting");
         cv.put(COLUMN_CABINET_DESIGN_FILE,"d00w15_24.bmp");
         cv.put("catalog_name","Signature Series");
         DB.insert(TABLE_CABINET, null, cv);
@@ -222,7 +222,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_CABINET_WIDTH,18);
         cv.put(COLUMN_CABINET_HEIGHT,34);
         cv.put(COLUMN_CABINET_DEPTH,22);
-        cv.put(COLUMN_CABINET_TYPE,"ADA");
+        cv.put(COLUMN_CABINET_TYPE,"Sitting");
         cv.put(COLUMN_CABINET_DESIGN_FILE,"d00w15_24.bmp");
         cv.put("catalog_name","Signature Series");
         DB.insert(TABLE_CABINET, null, cv);
@@ -232,7 +232,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_CABINET_WIDTH,21);
         cv.put(COLUMN_CABINET_HEIGHT,34);
         cv.put(COLUMN_CABINET_DEPTH,22);
-        cv.put(COLUMN_CABINET_TYPE,"ADA");
+        cv.put(COLUMN_CABINET_TYPE,"Sitting");
         cv.put(COLUMN_CABINET_DESIGN_FILE,"d00w15_24.bmp");
         cv.put("catalog_name","Signature Series");
         DB.insert(TABLE_CABINET, null, cv);
@@ -242,7 +242,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_CABINET_WIDTH,24);
         cv.put(COLUMN_CABINET_HEIGHT,34);
         cv.put(COLUMN_CABINET_DEPTH,22);
-        cv.put(COLUMN_CABINET_TYPE,"ADA");
+        cv.put(COLUMN_CABINET_TYPE,"Sitting");
         cv.put(COLUMN_CABINET_DESIGN_FILE,"d00w15_24.bmp");
         cv.put("catalog_name","Signature Series");
         DB.insert(TABLE_CABINET, null, cv);

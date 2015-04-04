@@ -85,9 +85,9 @@ public class CabinetResults extends ActionBarActivity {
 
                 String selection = null;
                 String[] selectionArgs = null;
-                if (cols.size() > 0)
+                if (cols != null && cols.size() > 0)
                     selection = getQueryableColString(cols);
-                if (colVals.size() > 0)
+                if (colVals != null && colVals.size() > 0)
                     selectionArgs = getArgArray(colVals);
 
                 //Create database object

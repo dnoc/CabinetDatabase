@@ -2,10 +2,12 @@ package eli.cabinetdatabase;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.nfc.Tag;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -15,6 +17,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
@@ -24,6 +27,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,13 +37,12 @@ import java.util.List;
 
 public class Search extends ActionBarActivity {
 
-    private static EditText modelNumInput, designInput,widthInput,heightInput,depthInput = null;
+    private static EditText modelNumInput,widthInput,heightInput,depthInput = null;
     private static ListView materialList, typeList = null;
 
     protected static String testTag = "Testing";
 
     private static String MODELNUMKEY = "model_number";
-    private static String DESIGNKEY = "design_file";
     private static String WIDTHKEY = "width";
     private static String HEIGHTKEY = "height";
     private static String DEPTHKEY  = "depth";
@@ -86,12 +90,6 @@ public class Search extends ActionBarActivity {
             colVals.add(modelNum);
             cols.add(MODELNUMKEY + "=?");
         }
-        String design = designInput.getText().toString();
-        if  (!design.equals("") &&  design.trim().length() != 0)
-        {
-            colVals.add(design);
-            cols.add(DESIGNKEY + "=?");
-        }
 
         int width = convertToInt(widthInput.getText().toString());
         if (width < 0)
@@ -130,7 +128,6 @@ public class Search extends ActionBarActivity {
 
         //Check for selected material values
         String sqlMaterial = null;
-        ArrayList<String> materialCols = new ArrayList<>();
         ArrayList<String> materialVals = new ArrayList<>();
         int selectedCount = 0;
         for (int i = 0; i < materialList.getAdapter().getCount(); i++)
@@ -148,20 +145,11 @@ public class Search extends ActionBarActivity {
         {
             if (selectedCount == 1)
             {
-                materialCols.add(MATERIALKEY + "=? ");
                 sqlMaterial += MATERIALKEY + "=?";
             }
             else
             {
                 sqlMaterial += MATERIALKEY + "=? OR ";
-                if (first)
-                {
-                    materialCols.add(MATERIALKEY + "=? OR ");
-                    first = false;
-                }
-                else {
-                    materialCols.add(MATERIALKEY + "=? OR ");
-                }
             }
             selectedCount--;
         }
@@ -213,12 +201,20 @@ public class Search extends ActionBarActivity {
                 Intent in = new Intent(getApplicationContext(), CabinetResults.class);
                 in.putStringArrayListExtra("Selection", cols);
                 in.putStringArrayListExtra("SelectionArgs", colVals);
+                JSONArray sql = new JSONArray();
+                sql.put(cols);
+                sql.put(colVals);
 
                 if (sqlMaterial != null) {
+                    sql.put(sqlMaterial);
+                    sql.put(materialVals);
                     in.putExtra("sqlMaterial", sqlMaterial);
-                    in.putExtra("materialCols", materialCols);
                     in.putExtra("materialVals", materialVals);
                 }
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("savedSql", sql.toString());
+                editor.commit();
                 startActivity(in);
             }
             catch(Exception e)
@@ -254,9 +250,6 @@ public class Search extends ActionBarActivity {
         if (!modelNumInput.getText().toString().equals("")) {
             outState.putString(MODELNUMKEY, modelNumInput.getText().toString());
         }
-        if (!designInput.getText().toString().equals("")) {
-            outState.putString(DESIGNKEY, designInput.getText().toString());
-        }
         if (!widthInput.getText().toString().equals("")) {
             outState.putString(WIDTHKEY, widthInput.getText().toString());
         }
@@ -277,10 +270,6 @@ public class Search extends ActionBarActivity {
             temp = savedInstanceState.getString(MODELNUMKEY);
             if (temp != null) {
                 modelNumInput.setText(temp);
-            }
-            temp = savedInstanceState.getString(DESIGNKEY);
-            if (temp != null) {
-                designInput.setText(temp);
             }
             temp = savedInstanceState.getString(WIDTHKEY);
             if (temp != null) {
@@ -358,8 +347,6 @@ public class Search extends ActionBarActivity {
             //set Views
             modelNumInput = (EditText) rootView.findViewById(R.id.modelNumText);
 
-            designInput = (EditText) rootView.findViewById(R.id.designText);
-
             widthInput = (EditText) rootView.findViewById(R.id.widthText);
 
             heightInput = (EditText) rootView.findViewById(R.id.heightText);
@@ -373,12 +360,32 @@ public class Search extends ActionBarActivity {
             materialList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
             materialList.setAdapter(materialAdapter);
 
+            materialList.setOnTouchListener(new View.OnTouchListener() {
+                // Setting on Touch Listener for handling the touch inside ScrollView
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    // Disallow the touch request for parent scroll on touch of child view
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    return false;
+                }
+            });
+
             typeList = (ListView) rootView.findViewById(R.id.typeListView);
             String[] types = new String[]{"Sitting","ADA","Standing","Wall","Full Height"};
             ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(rootView.getContext(), android.R.layout.simple_list_item_multiple_choice,types);
 
             typeList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
             typeList.setAdapter(typeAdapter);
+
+            typeList.setOnTouchListener(new View.OnTouchListener() {
+                // Setting on Touch Listener for handling the touch inside ScrollView
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    // Disallow the touch request for parent scroll on touch of child view
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    return false;
+                }
+            });
 
             return rootView;
         }

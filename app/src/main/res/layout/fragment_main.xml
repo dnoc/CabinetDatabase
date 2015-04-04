@@ -13,13 +13,33 @@
         android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Catalog"
+        android:text="Search Catalog"
         android:id="@+id/catalog_button"
-        android:layout_alignParentBottom="true"
+        android:onClick="toCatalog"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Load Last Search"
+        android:id="@+id/button"
+        android:onClick="loadLastSearch"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="157dp"
-        android:onClick="toCatalog"/>
+        android:layout_below="@+id/button2"
+        android:layout_marginTop="45dp"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Calculate Distance"
+        android:id="@+id/button2"
+        android:onClick="toDistanceCalculator"
+        android:layout_below="@+id/catalog_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp" />
 
 </RelativeLayout>

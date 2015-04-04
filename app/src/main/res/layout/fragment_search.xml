@@ -1,4 +1,7 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+<RelativeLayout
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -7,13 +10,13 @@
     tools:context="eli.cabinetdatabase.Search$PlaceholderFragment">
 
     <Button
-        android:layout_width="150dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Search"
         android:onClick="onSubmit"
         android:id="@+id/search_button"
         android:layout_below="@+id/typeListView"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
         android:layout_centerHorizontal="true" />
 
     <EditText
@@ -25,20 +28,12 @@
         android:layout_marginTop="25dp" />
 
     <EditText
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/designText"
-        android:layout_marginTop="44dp"
-        android:layout_below="@+id/modelNumText"
-        android:layout_centerInParent="true" />
-
-    <EditText
         android:layout_width="75dp"
         android:layout_height="wrap_content"
         android:inputType="number"
         android:ems="10"
         android:id="@+id/widthText"
-        android:layout_below="@+id/designText"
+        android:layout_below="@+id/modelNumText"
         android:layout_marginTop="30dp" />
 
     <EditText
@@ -63,7 +58,7 @@
 
     <ListView
         android:layout_width="300dp"
-        android:layout_height="70dp"
+        android:layout_height="100dp"
         android:background="#a8a8a8"
         android:layout_centerInParent="true"
         android:id="@+id/materialListView"
@@ -76,7 +71,7 @@
         android:layout_width="300dp"
         android:layout_centerInParent="true"
         android:background="#a8a8a8"
-        android:layout_height="70dp"
+        android:layout_height="130dp"
         android:id="@+id/typeListView"
         android:layout_below="@+id/typeTitle"
         android:layout_marginTop="10dp"
@@ -93,22 +88,12 @@
         android:layout_alignParentTop="true"/>
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Design:"
-        android:id="@+id/designTitle"
-        android:layout_below="@+id/modelNumText"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="20dp"/>
-
-    <TextView
         android:layout_width="75dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Width:"
         android:id="@+id/widthTitle"
-        android:layout_below="@+id/designText"
+        android:layout_below="@+id/modelNumText"
         android:layout_alignTop="@+id/heightTitle"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -153,6 +138,7 @@
         android:id="@+id/typeTitle"
         android:layout_below="@+id/materialListView"
         android:layout_centerInParent="true"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="15dp"/>
 
 </RelativeLayout>
+</ScrollView>
