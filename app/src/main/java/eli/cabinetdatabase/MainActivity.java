@@ -75,4 +75,8 @@ public class MainActivity extends ActionBarActivity {
     public void toCatalog(View v){
         startActivity(new Intent(getApplicationContext(),Search.class));
     }
+
+    public void toDistance(View v){
+        startActivity(new Intent(getApplicationContext(),DistanceCalculator.class));
+    }
 }

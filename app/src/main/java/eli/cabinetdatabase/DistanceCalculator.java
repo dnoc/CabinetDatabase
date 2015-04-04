@@ -3,6 +3,10 @@ package eli.cabinetdatabase;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.Criteria;
+import android.location.LocationListener;
+import android.location.LocationProvider;
+import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -15,10 +19,12 @@ import android.location.LocationManager;
 import android.location.Geocoder;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
@@ -27,13 +33,12 @@ import java.net.URLEncoder;
 import java.util.Scanner;
 
 
-public class DistanceCalculator extends FragmentActivity {
+public class DistanceCalculator extends FragmentActivity{
 
     private static Location factoryLocation;
     private static LocationManager locationFinder;
     private static TextView distance;
     private static String apiKey = "AIzaSyD4bAs8KvHQiT_tF6GQIDBycm-g8CdNin4";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +61,31 @@ public class DistanceCalculator extends FragmentActivity {
         super.onStop();
     }
 
-    public Location getLocation() {
+    public Location getLocation(){
+
+        LocationListener loc_listener = new LocationListener() {
+
+            public void onLocationChanged(Location l) {}
+
+            public void onProviderEnabled(String p) {}
+
+            public void onProviderDisabled(String p) {}
+
+            public void onStatusChanged(String p, int status, Bundle extras) {}
+        };
+        locationFinder.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, loc_listener);
         Location currentLocation = locationFinder.getLastKnownLocation("gps");
+
+        if(currentLocation == null){
+            currentLocation.setLongitude(40.002546);
+            currentLocation.setLatitude(-83.015276);
+        }
+
+
         return currentLocation;
     }
 
-    public void calculateDistance() throws Exception {
+    public void calculateDistance(View v) throws Exception {
         Location currentLocation = getLocation();
         String distString = requestAndParseDistance(currentLocation);
         distance = (TextView) findViewById(R.id.dist);
@@ -70,42 +94,35 @@ public class DistanceCalculator extends FragmentActivity {
 
     public String requestAndParseDistance(Location destination) throws Exception {
         String dist;
+        //build request to distance matrix
         String uri = "https://maps.googleapis.com/maps/api/distancematrix/json?";
-        uri += "origins=" + Double.toString(factoryLocation.getLatitude()) + ","
-                + Double.toString(factoryLocation.getLongitude());
-        uri += "&destinations" + Double.toString(destination.getLatitude()) + ","
-                + Double.toString(destination.getLongitude());
+        uri += "origins=" + URLEncoder.encode(Double.toString(factoryLocation.getLatitude()),"UTF-8") + ","
+                + URLEncoder.encode(Double.toString(factoryLocation.getLongitude()), "UTF-8");
+        uri += "&destinations" + URLEncoder.encode(Double.toString(destination.getLatitude()), "UTF-8") + ","
+                + URLEncoder.encode(Double.toString(destination.getLongitude()), "UTF-8");
         uri += "&units=imperial";
-        uri += "&key=" + apiKey;
+        uri += "&key=" + URLEncoder.encode(apiKey,"UTF-8");
 
-        String urlString;
-        URL url;
-        try {
-            urlString = URLEncoder.encode(uri, StandardCharsets.UTF_8.name());
-            try {
-                url = new URL(urlString);
-            } catch (MalformedURLException e) {
-                throw new AssertionError("Bad URL");
-            }
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError("UTF-8 is unknown");
-        }
+        URL url = new URL(uri);
+
+
+        //Scan reply from distance matrix NEED TO DO THIS IN ASYNC TASK OR THREAD
 
         Scanner scan;
-        try {
-            scan = new Scanner(url.openStream());
-        } catch (IOException e) {
-            throw new AssertionError("Request Error");
-        }
+        InputStream in = url.openStream();
+        scan = new Scanner(in);
+
         String requestData = "";
         while (scan.hasNext())
             requestData += scan.nextLine();
         scan.close();
 
+        //parse JSON from Distance Matrix
         JSONObject json = new JSONObject(requestData);
-
-
-
+        JSONObject rows = json.getJSONObject("rows");
+        JSONObject elements = rows.getJSONObject("elements");
+        JSONObject distance = elements.getJSONObject("distance");
+        dist = distance.getString("text");
 
         return dist;
     }
