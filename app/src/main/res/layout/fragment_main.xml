@@ -42,4 +42,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="45dp" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Distance Calculator"
+        android:id="@+id/distance_button"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="66dp"
+        android:onClick="toDistance"/>
+
 </RelativeLayout>
