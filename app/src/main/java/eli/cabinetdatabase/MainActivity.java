@@ -194,6 +194,6 @@ public class MainActivity extends ActionBarActivity {
 
     public void toDistanceCalculator(View v)
     {
-        //startActivity(new Intent(getApplicationContext(),DistanceCalculator.class));
+        startActivity(new Intent(getApplicationContext(),DistanceCalculator.class));
     }
 }
