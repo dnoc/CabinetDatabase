@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.LoginFilter;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -231,7 +232,12 @@ public class DistanceCalculator extends FragmentActivity {
 
             //setText on View
             driveDistance = (TextView) findViewById(R.id.dist);
-            driveDistance.setText(distString +" Miles");
+            if (distanceInMiles < 0) {
+                driveDistance.setText("Current Location Not Found");
+            }
+            else {
+                driveDistance.setText(distString + " Miles");
+            }
         }
 
     };

@@ -1,5 +1,6 @@
 package eli.cabinetdatabase;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -160,7 +161,7 @@ public class CabinetResults extends ActionBarActivity {
                         if (cabinets.size() > 0) {
                             String[] displayText = getDisplayText(cabinets);
 
-                            Uri[] imgId = getImageIds(cabinets);
+                            final Uri[] imgId = getImageIds(cabinets);
 
                             CustomList adapter = new CustomList(this.getActivity(), displayText, imgId);
                             ListView displayList = (ListView) rootView.findViewById(R.id.listView);
@@ -171,7 +172,12 @@ public class CabinetResults extends ActionBarActivity {
                                 public void onItemClick(AdapterView<?> parent, View view,
                                                         int position, long id) {
                                     //Load cabinetDetail fragment here!
-                                    Toast.makeText(rootView.getContext(), "You Clicked on Cabinet 1", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(rootView.getContext(), "You Clicked on Cabinet 1", Toast.LENGTH_SHORT).show();
+
+                                    Intent in = new Intent(view.getContext(), CabinetDetail.class);
+                                    in.putExtra("imgFile",imgId[position].toString());
+
+                                    startActivity(in);
                                 }
                             });
                         }
@@ -269,5 +275,6 @@ public class CabinetResults extends ActionBarActivity {
 
             return retVal;
         }
+
     }
 }
