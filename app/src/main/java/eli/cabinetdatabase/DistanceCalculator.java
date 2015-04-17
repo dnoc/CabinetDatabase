@@ -53,7 +53,7 @@ public class DistanceCalculator extends FragmentActivity {
     private static final long MIN_TIME_FOR_UPDATE = 1000 * 60 * 2;
 
 
-    private static String apiKey = "AIzaSyBaTFeAAzbuF9JgBU49SdYygGYFsiUdFwU";
+    private static String apiKey = "AIzaSyAmqSGnkPw9CwokwXjMfdq84sOY3VyRQvk";
 
 
     @Override
@@ -136,6 +136,12 @@ public class DistanceCalculator extends FragmentActivity {
                     driveDistance.setText("Current location not available");
                 }
             }
+        }
+        else
+        {
+            //setText on View
+            driveDistance = (TextView) findViewById(R.id.dist);
+            driveDistance.setText("GPS is not enabled!");
         }
     }
 
