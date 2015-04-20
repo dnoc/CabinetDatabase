@@ -11,6 +11,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 
 public class CabinetDetail extends ActionBarActivity {
@@ -66,8 +70,22 @@ public class CabinetDetail extends ActionBarActivity {
             String img = extras.getString("imgFile");
 
             Uri imgFile = Uri.parse(img);
+            ImageView cabImg = (ImageView) rootView.findViewById(R.id.cabImg);
+            cabImg.setImageURI(imgFile);
 
+            int position = extras.getInt("position");
+            Cabinet cabinet = CabinetResults.cabinets.get(position);
 
+            String info = cabinet.getModelNum()+"\n\n";
+            info += "Catalog: " + cabinet.getCatalogName() + "\n";
+            info += "Material: " + cabinet.getMaterial() + "\n";
+            info += "Type: " + cabinet.getType() + "\n";
+            info += "Height: " + cabinet.getHeight() + "\n";
+            info += "Depth: " + cabinet.getDepth() + "\n";
+            info += "Width: " + cabinet.getWidth() + "\n";
+
+            TextView cabInfo = (TextView) rootView.findViewById(R.id.cabInfo);
+            cabInfo.setText(info);
 
 
             return rootView;

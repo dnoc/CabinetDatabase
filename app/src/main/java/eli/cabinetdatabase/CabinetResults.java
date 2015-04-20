@@ -27,6 +27,7 @@ import java.util.Map;
 
 
 public class CabinetResults extends ActionBarActivity {
+    protected static ArrayList<Cabinet> cabinets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class CabinetResults extends ActionBarActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
+
 
         public PlaceholderFragment() {
         }
@@ -131,7 +133,7 @@ public class CabinetResults extends ActionBarActivity {
                     //if there were rows retrieved
                     if (cursor.moveToFirst()) {
                         //Create arraylist of cabinets, one for each cabinet retrieved
-                        ArrayList<Cabinet> cabinets = new ArrayList<>(cursor.getCount());
+                        cabinets = new ArrayList<>(cursor.getCount());
                         for (int i = 0; i < cursor.getCount(); i++) {
                             if (matName.isEmpty()) {
                                 cabinets.add(new Cabinet(cursor.getString(cursor.getColumnIndex(DBHelper.COLUMN_CABINET_MODEL_NUMBER)),
@@ -176,6 +178,7 @@ public class CabinetResults extends ActionBarActivity {
 
                                     Intent in = new Intent(view.getContext(), CabinetDetail.class);
                                     in.putExtra("imgFile",imgId[position].toString());
+                                    in.putExtra("position",position);
 
                                     startActivity(in);
                                 }
