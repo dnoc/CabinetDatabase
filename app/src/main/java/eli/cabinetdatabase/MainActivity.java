@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,14 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.Button;
 
 import org.json.JSONArray;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -80,7 +76,7 @@ public class MainActivity extends ActionBarActivity {
             String storedSql = settings.getString("savedSql", "");
             if (storedSql.length() == 0)
             {
-                Button loadSearch = (Button) rootView.findViewById(R.id.button);
+                Button loadSearch = (Button) rootView.findViewById(R.id.lastSearchButton);
                 loadSearch.setVisibility(View.INVISIBLE);
                 loadSearch.setClickable(false);
             }
