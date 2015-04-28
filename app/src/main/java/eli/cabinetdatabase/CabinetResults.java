@@ -94,14 +94,6 @@ public class CabinetResults extends ActionBarActivity {
                 //Create database object
                 SQLiteDatabase db;
 
-                //Check if database already exists
-                File dbFile = rootView.getContext().getDatabasePath(DBHelper.DB_NAME);
-                //delete existing database file if it exists
-                //FOR TESTING ONLY, REMOVE ONCE ALL CABINETS HAVE BEEN ADDED IN DBHelper Class!!
-                if (dbFile.exists()) {
-                    dbFile.delete();
-                }
-
                 DBHelper DB = new DBHelper(rootView.getContext());
                 db = DB.open();
 

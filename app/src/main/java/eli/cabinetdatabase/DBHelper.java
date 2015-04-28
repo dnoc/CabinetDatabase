@@ -47,7 +47,6 @@ public class DBHelper extends SQLiteOpenHelper {
         DB = db;
 
         //delete an existing instance of the tables if they exist
-        //REMOVE THIS FOR FINAL PRODUCT RELEASE
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CABINET);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATALOG);
 
